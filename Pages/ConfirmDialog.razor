@@ -1,0 +1,37 @@
+﻿@if (ShowDialog)
+{
+    <div class="modal show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@Title</h5>
+                    <button type="button" class="btn-close" @onclick="Close" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>@Message</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="Close">Cancel</button>
+                    <button class="btn btn-danger" @onclick="Confirm">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    [Parameter] public string Title { get; set; } = "Confirm";
+    [Parameter] public string Message { get; set; } = "Are you sure?";
+    [Parameter] public EventCallback<bool> OnConfirmed { get; set; }
+
+    public bool ShowDialog { get; set; }
+
+    public void Show() => ShowDialog = true;
+    void Close() => ShowDialog = false;
+    async Task Confirm()
+    {
+        ShowDialog = false;
+        await OnConfirmed.InvokeAsync(true);
+    }
+}
